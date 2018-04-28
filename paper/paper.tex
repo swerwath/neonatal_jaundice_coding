@@ -85,7 +85,41 @@ In total, 7092 hospitalizations were of neonates. Of these, 2868 stays were asso
 
 For each relevant hospitalization, we concatenated all ICU notes, including nursing notes, radiology reports, physician progress notes, and discharge summaries into a single string of text called a \textit{noteset}. This string served as the raw data to be preprocessed and then classified. 
 \subsection{Data Preprocessing}\label{AA}
+Preprocessing of raw text is an extremely important element of any NLP model, especially in the task of classification [HADDI]. In fact, the preprocessing of raw text is a form of manual feature selection, in which we are able to choose what parts of the document are to be given to the classifier [FATIH].
 
+The first stage of our preprocessing algorithm is \textit{cleaning}, in which punctuation and other extraneous characters are stripped from the raw text. In addition to punctuation, numbers are also removed from the noteset. While numbers are often left in classifiers for medical texts, later cross-validation indicated that they were low-information for this particular task. Finally, we also remove anonymization indicators from the text of the doument. The indicators are special flags left to indicate that confidential patient data had been redacted from the noteset at that point in the text, and generally contained information that was irrelevant for classification such as dates, names, and phone numbers.
+
+After the noteset is cleaned, it is \textit{tokenized}, or split into a stream of individual words. The next series of preprocessing steps act on individual words or multiword phrases, and they work to reduce the \textit{vocabulary}, or number of unique words, of our dataset. Vocabulary reduction often results in improved classification performance [MADSEN] because the model does not have to learn to classify low-information words or learn that synonymous words or phrases should be classified similarly. Depending on your representation of documents as vectors (e.g. one-hot encodings), vocabulary reduction corresponds directly to a dimensionality reduction of samples.
+
+The first stage of vocabulary reduction is \textit{semantic mapping}, i.e. the replacement of synonymous words or phrases with a standard token [BANERJEE]. This allows the model to learn only one representation of the underlying concept rather than having to learn many. For this, we use a list of 727 common medical words and phrases [TAMANG] and use regular expressions to find and replace each of them in the notesets. Examples of such replacements can be found in Table~\ref{reptab}.
+\begin{table}[htbp]
+\caption{Example Replacements During Preprocessing}
+\begin{center}
+\begin{tabular}{ccc}
+\textbf{Rule}&\textbf{Raw Text}&\textbf{Processed Text} \\
+\hline
+\textbf{Semantic Map} & "raises concern" & "RISK" \\
+\textbf{Semantic Map} & "cannot rule out" & "RISK" \\
+\textbf{Semantic Map} & "no evidence of" & "NEGEX" \\
+\textbf{Semantic Map} & "rule out" & "NEGEX" \\
+\textbf{Stemming} & "neonatal" & "neonat" \\
+\textbf{Stemming} & "neonate" & "neonat" \\
+\textbf{Stop Word Removal} & "the patient is" & "patient" \\
+\textbf{Phrase Detection} & "heart attack" & "heart\_attack" \\
+\end{tabular}
+\label{reptab}
+\end{center}
+\end{table}
+
+After semantic mapping, we apply \textit{stemming}, which is the process of reducing words to their root morpheme (see Table~\ref{reptab}). For this task, we use the Snowball stemming algorithm [PORTER]. Since different morphological variations of the same word (e.g. "neonatal" and "neonate") likely have similar meanings, stemming allows the model to learn  a single classification for all morphological forms for a word.
+
+Next, \textit{stop words} were removed from the notesets. Stop words are common words such as "the" and "it" which convey no real semantic information. The removal of stop words from raw text has been shown to improve the performance of classification models due to their being low-information and useless for most classification tasks [SILVA]. 
+
+Finally, collocations, or common multiword phrases, are detected and replaced with a single token. In order to automatically detect collocations in our corpus, we calculate the \textit{normalized pointwise mutual information} (NPMI) of every pair of words in the corpus [BOUMA]. The NPMI is given by \eqref{pmi}, where $x$ and $y$ are indicators for a two given words appearing in text, $p(x,y)$ is the probability of the two words appearing next to each other, and all probabilities are measured empirically from our corpus.
+\begin{equation}
+i_n(x,y) = \frac{-1}{\ln p(x,y)}\ln \frac{p(x,y)}{p(x)p(y)}\label{pmi}
+\end{equation}
+Intuitively, NMPI measures how much the the co-occurance of two words $x$ and $y$ differs from what we would expect if their occurrences were independent of each other. For word pairs in our corpus with high NMPI, we normalized co-occurances in raw text into a single token (see Table~\ref{reptab}).
 \subsection{Document Representation}\label{AA}
 
 \subsection{Classification Models}\label{AA}
@@ -171,13 +205,6 @@ with units. In the example, write ``Magnetization (A/m)'' or ``Magnetization
 \{A[m(1)]\}'', not just ``A/m''. Do not label axes with a ratio of 
 quantities and units. For example, write ``Temperature (K)'', not 
 ``Temperature/K''.
-
-\section*{Acknowledgment}
-
-The preferred spelling of the word ``acknowledgment'' in America is without 
-an ``e'' after the ``g''. Avoid the stilted expression ``one of us (R. B. 
-G.) thanks $\ldots$''. Instead, try ``R. B. G. thanks$\ldots$''. Put sponsor 
-acknowledgments in the unnumbered footnote on the first page.
 
 \section*{References}
 
