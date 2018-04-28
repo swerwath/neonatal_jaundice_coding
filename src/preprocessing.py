@@ -4,14 +4,18 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from random import shuffle
 from gensim.models import Phrases
+import pickle
 from get_data_from_csvs import get_relevant_hamds, get_relevant_notesets, get_all_neonate_hamds
 
 stemmer = snowballstemmer.stemmer('english');
-punct = '.,_/#-><()&%[]:=;+?!\'"'
+punct = '.,_/#-><()&%[]:=;+?!\'"1234567890'
 
 stop_words = set(stopwords.words('english'))
 extra_removal = set(["cm", "mm", "x", "please", "is", "are", "be", "been"])
 to_remove = stop_words.union(extra_removal)
+
+replacement_file_path = "./data/clever_replacements"
+replacements = pickle.load(open(replacement_file_path, 'rb'))
 
 # Preprocesses a single noteset for a hospital stay
 def preprocess_noteset(noteset):
@@ -25,6 +29,11 @@ def preprocess_noteset(noteset):
     for p in punct:
         noteset = noteset.replace(p, '')
     noteset = noteset.replace('  ', ' ')
+
+    noteset = ' ' + noteset + ' '
+    for r in replacements:
+        noteset = noteset.replace(r[0], r[1])
+    noteset = noteset.strip()
 
     # Word tokenize
     words = word_tokenize(noteset)
