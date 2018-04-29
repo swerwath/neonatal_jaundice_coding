@@ -1,1 +1,1 @@
-python preprocessing.py /Volumes/scottd/mimic_uncompressed /Volumes/scottd/mimic_processed/preproced_discharge.bin
+python preprocessing.py /Volumes/scottd/mimic_uncompressed /Volumes/scottd/mimic_processed/preproced.bin

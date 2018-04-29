@@ -30,7 +30,7 @@ def get_relevant_notesets(hamds, dir_path=CSV_DIR_PATH, noteevent_csv=NOTE_EVENT
     with open(csv_path) as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                if row["HADM_ID"] != "" and int(row["HADM_ID"]) in notesets.keys() and row["ISERROR"] != '1' and "discharge" in row["TEXT"].lower():
+                if row["HADM_ID"] != "" and int(row["HADM_ID"]) in notesets.keys() and row["ISERROR"] != '1':
                     notesets[int(row["HADM_ID"])] += "\n" + row["TEXT"]
     return notesets
 
