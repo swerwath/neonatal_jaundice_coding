@@ -11,7 +11,7 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Automatic Medical Coding for Neonatal Jaundice with Machine Learning
+\title{Automatic Medical Coding for Neonatal Jaundice Using Ensemble Methods
 }
 
 
@@ -24,7 +24,7 @@ sbw@berkeley.edu}
 \maketitle
 
 \begin{abstract}
-This study explores the creation of a machine learning model to automatically identify whether a Neonatal Intensive Care Unit (NICU) patient was diagnosed with neonatal jaundice during a particular hospitalization based on their associated clinical notes. We develop a number of techniques for text preprocessing and feature selection and compare the effectiveness of different classification models. 
+This study explores the creation of a machine learning model to automatically identify whether a Neonatal Intensive Care Unit (NICU) patient was diagnosed with neonatal jaundice during a particular hospitalization based on their associated clinical notes. We develop a number of techniques for text preprocessing and feature selection and compare the effectiveness of different classification models. We show that using ensembled decision tree classification with AdaBoost outperforms support vector machines (SVM), the current state-of-the-art technique for neonatal jaundice coding.
 \end{abstract}
 
 \section{Introduction}
@@ -123,16 +123,48 @@ Intuitively, NMPI measures how much the the co-occurance of two words $x$ and $y
 \subsection{Document Representation}\label{AA}
 In order to classify notesets, we have to represent them as vectors. While deeper methods (e.g. convolutional neural networks) are able to take word order into account, we choose to use a \textit{bag-of-words} (BoW) model in which we ignore the actual ordering of words in a document and instead simply count the number of occurrences of each unique word in the document. This has the benefit of greatly simplifying our document representation, but it throws away potentially valuable information contained in word ordering (e.g. "negative for cancer, positive for flu" and "positive for cancer, negative for flu" will have the same BoW representation). Despite this disadvantage, however, BoW representations work very well in practice for many applications.
 
-A naive approach to BoW representation is a \textit{count vector}. In a count vector, 
-\subsection{Classification Models}\label{AA}
+A naive approach to BoW representation is a \textit{count vector}. In a count vector, each unique word is represented by a $V$-dimensional one hot encoding vector, where $V$ is the size of the vocabulary. A document is then represented by the sum (or sometimes average) of the one hot encoding of all the words in the document. The result is that, at each index in a document vector, the entry at index $i$ is the number of times the $i$\textsuperscript{th} word in the vocabulary occurs in the document.
 
+A commonly used technique to improve upon the count vector representation to weight each entry by the term's \textit{inverse document frequency} (IDF), given in \eqref{idf}. $N$ is the total number of documents in the corpus, and the denominator represents the number of documents in the corpus where the word $t$ appears.
+\begin{equation}
+idf(t) = \log \frac{N}{|\{d \in D : t \in d\} |}\label{idf}
+\end{equation}
+The IDF measures the rarity of a word in a given corpus. From an information theoretic perspective, words with high IDF (i.e. rarer words) provide more information, so we want to give them more weight in our decision making process.
+
+When we weight each count vector entry by its word's IDF and normalize appropriately, we get that each entry $t$ in the vector representation for document $d$ is given by \eqref{tfidf}.
+\begin{equation}
+tfidf(t, d) = \frac{|t' \in d : t' = t|}{|d|} idf(t)\label{tfidf}
+\end{equation}
+This value is called the \textit{term frequency-inverse document frequency} (TF-IDF), and a vector of these values is called a TF-IDF vector.
+
+\subsection{Baseline SVM Models}\label{AA}
+Reference [MARAFINO] demonstrates the use of a support vector machine (SVM) to perform automatic coding for neonatal jaundice. This study used a grid search to determine that a linear kernel with penalty hyperparameter of $C = 100$. This model was reimplemented, and our own grid search over relevant hyperparmeters with 10-fold cross-validation found those same settings to be optimal. This SVM model was used as a baseline to compare with the performance of new ensemble learning methods. 
+\subsection{Ensemble Methods}\label{AA}
+\textit{Ensemble learning} refers to the practice of training and using multiple machine learning models and combining their outputs into a final output via a "voting" system. Ensemble methods often provide better results than using a single model because they can reduce variance. When a set of models are trained with random samples of a dataset or on a random subset of features, we are essentially sampling from the space of possible classifiers. By taking many samples and averaging their results, we reduce our reliance on the particularities of any one classifier and therefore reduce variance [DIETTERICH].
+
+We used the sklearn package [PEDREGOSA] to implement two ensembled classifiers: AdaBoost with decision trees [ZHU] and bagged decision trees [BREIMAN]. 
+
+AdaBoost 
 \subsection{Evaluation}\label{AA}
 
 \section{Results}
-\subsection{Performance of TF-IDF Methods}\label{AA}
-\subsection{Evaluation}\label{AA}
+The performance of the baseline classifier from [MARAFINO], our implementation of SVM, and the two ensembled classifiers are summarized in Table~\ref{restab}
+\begin{table}[htbp]
+\caption{Performance of Various Classifiers}
+\begin{center}
+\begin{tabular}{ccccc}
+\textbf{Classifier}&\textbf{Accuracy}&\textbf{Precision}&\textbf{Recall}&\textbf{F\textsubscript{1} Score} \\
+\hline
+\textbf{SVM (Marafino et al.)} & 0.898 & 0.908 & 0.853 & 0.884 \\
+\textbf{SVM (reimplemented)} &  & & &  \\
+\textbf{AdaBoost Trees} &  & & &  \\
+\textbf{Bagged Trees} &  & & &  \\
 
-
+\end{tabular}
+\label{restab}
+\end{center}
+\end{table}
+\section{Discussion}
 \section{Conclusion}
 
 \subsection{Figures and Tables}

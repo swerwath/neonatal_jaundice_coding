@@ -5,7 +5,7 @@ NOTE_EVENT_CSV = "NOTEEVENTS.csv"
 DIAGNOSIS_CSV = "DIAGNOSES_ICD.csv"
 ADMISSIONS_CSV = "ADMISSIONS.csv"
 
-CSV_DIR_PATH = "/Volumes/scottd/mimic_uncompressed"
+CSV_DIR_PATH = "/Volumes/scottf/mimic_uncompressed"
 
 NEONATAL_JAUNDICE_CODES = ["7730", "7731", "7732", "7741", "7742", "77430", "77431", "77439", "7746"]
 

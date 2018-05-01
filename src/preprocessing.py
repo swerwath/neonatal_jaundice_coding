@@ -44,6 +44,15 @@ def preprocess_noteset(noteset):
     # Apply word stemming
     # words = stemmer.stemWords(words)
 
+    # Apply negation
+    nrange = 3
+    for i in [i for i, w in enumerate(words) if w.strip() == 'NEGEX']:
+        to_negate = [i + j for j in range(nrange) if i + j < len(words)]
+        for j in to_negate:
+            words[j] = ''
+
+
+    words = [w for w in words if w.strip() != '']
     noteset = ' '.join(words)
 
     return noteset
