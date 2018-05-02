@@ -11,7 +11,7 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Automatic Medical Coding for Neonatal Jaundice Using Ensemble Methods
+\title{Automatic Coding for Neonatal Jaundice From Free Text Data Using Ensemble Methods
 }
 
 
@@ -115,11 +115,13 @@ After semantic mapping, we apply \textit{stemming}, which is the process of redu
 
 Next, \textit{stop words} were removed from the notesets. Stop words are common words such as "the" and "it" which convey no real semantic information. The removal of stop words from raw text has been shown to improve the performance of classification models due to their being low-information and useless for most classification tasks \cite{Silva}. 
 
-Finally, collocations, or common multiword phrases, are detected and replaced with a single token. In order to automatically detect collocations in our corpus, we calculate the \textit{normalized pointwise mutual information} (NPMI) of every pair of words in the corpus \cite{Bouma}. The NPMI is given by \eqref{pmi}, where $x$ and $y$ are indicators for a two given words appearing in text, $p(x,y)$ is the probability of the two words appearing next to each other, and all probabilities are measured empirically from our corpus.
+Then, collocations, or common multiword phrases, are detected and replaced with a single token. In order to automatically detect collocations in our corpus, we calculate the \textit{normalized pointwise mutual information} (NPMI) of every pair of words in the corpus \cite{Bouma}. The NPMI is given by \eqref{pmi}, where $x$ and $y$ are indicators for a two given words appearing in text, $p(x,y)$ is the probability of the two words appearing next to each other, and all probabilities are measured empirically from our corpus.
 \begin{equation}
 i_n(x,y) = \frac{-1}{\ln p(x,y)}\ln \frac{p(x,y)}{p(x)p(y)}\label{pmi}
 \end{equation}
 Intuitively, NMPI measures how much the the co-occurance of two words $x$ and $y$ differs from what we would expect if their occurrences were independent of each other. For word pairs in our corpus with high NMPI, we normalized co-occurances in raw text into a single token (see Table~\ref{reptab}).
+
+Finally, the text was searched for phrases such as "no" and "rule out" that indicate negation. We assume that the three words following such phrases are negated, and so we remove them from the document. Since our bag of words representation fails to take word order into account, this prevent the model from interpreting the word "jaundice" in the phrase "rule out jaundice" as indicating a positive result. 
 \subsection{Document Representation}\label{AA}
 In order to classify notesets, we have to represent them as vectors. While deeper methods (e.g. convolutional neural networks) are able to take word order into account, we choose to use a \textit{bag-of-words} (BoW) model in which we ignore the actual ordering of words in a document and instead simply count the number of occurrences of each unique word in the document. This has the benefit of greatly simplifying our document representation, but it throws away potentially valuable information contained in word ordering (e.g. "negative for cancer, positive for flu" and "positive for cancer, negative for flu" will have the same BoW representation). Despite this disadvantage, however, BoW representations work very well in practice for many applications.
 
@@ -137,7 +139,7 @@ tfidf(t, d) = \frac{|t' \in d : t' = t|}{|d|} idf(t)\label{tfidf}
 \end{equation}
 This value is called the \textit{term frequency-inverse document frequency} (TF-IDF), and a vector of these values is called a TF-IDF vector.
 
-\subsection{Baseline SVM Models}\label{AA}
+\subsection{Baseline SVM Model}\label{AA}
 Reference \cite{MARAFINO} demonstrates the use of a support vector machine (SVM) to perform automatic coding for neonatal jaundice. This study used a grid search to determine that a linear kernel with penalty hyperparameter of $C = 100$. This model was reimplemented, and our own grid search over relevant hyperparmeters with 10-fold cross-validation found those same settings to be optimal. This SVM model was used as a baseline to compare with the performance of new ensemble learning methods. 
 \subsection{Ensemble Methods}\label{AA}
 \textit{Ensemble learning} refers to the practice of training and using multiple machine learning models and combining their outputs into a final output via a "voting" system. Ensemble methods often provide better results than using a single model because they can reduce variance. When a set of models are trained with random samples of a dataset or on a random subset of features, we are essentially sampling from the space of possible classifiers. By taking many samples and averaging their results, we reduce our reliance on the particularities of any one classifier and therefore reduce variance \cite{Dietterich}.
@@ -158,9 +160,8 @@ The performance of the baseline classifier from \cite{Marafino}, our implementat
 \begin{tabular}{ccccc}
 \textbf{Classifier}&\textbf{Accuracy}&\textbf{Precision}&\textbf{Recall}&\textbf{F\textsubscript{1} Score} \\
 \hline
-\textbf{SVM (Marafino et al.)} & 0.898 & 0.908 & 0.853 & 0.884 \\
-\textbf{SVM (reimplemented)} & 0.865 & 0.835 & 0.839 & 0.837 \\
-\textbf{AdaBoost Trees} & 0.907 & \textbf{0.923} & 0.846 & 0.883 \\
+\textbf{SVM} & 0.865 & 0.835 & 0.839 & 0.837 \\
+\textbf{Boosted Trees} & 0.907 & \textbf{0.923} & 0.846 & 0.883 \\
 \textbf{Bagged Trees} & \textbf{0.909} & 0.904 & \textbf{0.876} & \textbf{0.890} \\
 \end{tabular}
 \label{restab}
@@ -171,9 +172,9 @@ The F\textsubscript{1} score refers to the harmonic average of precision and rec
 F_1 = \frac{2}{precision^{-1} + recall^{-1}}\label{f1}
 \end{equation}
 
-We see that our reimplementation of the SVM in \cite{MARAFINO} did not perform as well as the original, though this is likely due to differences in the dataset. Both of our ensemble methods outperform the two SVM implementations in at least one of the performance metrics. 
+We see that our reimplementation of the SVM model in \cite{Marafino} did not perform as well as the original, though this is likely due to differences in the dataset. Both of our ensemble methods outperform the two SVM implementations in at least one of the performance metrics. 
 
-We see the receiver operating characteristics (ROC) of the ensembled methods in Fig.~\ref{roc}. We see that the SVM baseline performance lies under the the ROC curves of both ensemble methods, implying that the ensemble methods are able to outperform the SVM. 
+We see the receiver operating characteristics (ROC) of the ensemble methods in Fig.~\ref{roc}. We see that the baseline SVM performance lies under the the ROC curves of both ensemble methods, implying that the ensemble methods are able to outperform SVM. 
 \begin{figure}[htbp]
 \centerline{\includegraphics[scale=0.6]{roc}}
 \caption{ROC curves of ensemble methods compared to SVM baseline}
@@ -191,12 +192,7 @@ When training ensemble methods, one important hyperparameter is the number of es
 \caption{The effect of adding more classifiers on AdaBoost accuracy. Overfitting occurs when more than 40 classifiers are used.}
 \label{num}
 \end{figure}
-We see that adding more than 40 classifiers increases training accuracy while having no effect on testing accuracy, demonstrating that overfitting is occurring. Fig.~\ref{bag} shows a similar relationship for the bagged trees classifier.
-\begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.6]{num_bagged}}
-\caption{The effect of adding more classifiers on AdaBoost accuracy. Overfitting occurs when more than 13 classifiers are used.}
-\label{bag}
-\end{figure}
+We see that adding more than 40 classifiers increases training accuracy while having no effect on testing accuracy, demonstrating that overfitting is occurring.
 
 In the task of medical detection, recall is often considered a more important metric than precision, since false positives can be manually checked and corrected by a human while false negatives may go unnoticed. As such, the bagged trees model may be favored for actual use in a clinical setting.
 \subsection{Feature Importance}
@@ -205,14 +201,14 @@ In the task of medical detection, recall is often considered a more important me
 \caption{Relevance of words in determining a positive SVM classification}
 \label{rel}
 \end{figure*}
-While the SVM was outperformed by ensemble methods, it can nonetheless provide interesting insight into what words are most likely to indicate neonatal jaundice.
+While SVM was outperformed by ensemble methods, it can nonetheless provide interesting insight into what words are most likely to indicate neonatal jaundice.
 
 Recall that, in SVM with a linear kernel, the learned classifier is the ideal separating hyperplane. This hyperplane, like all hyperplanes, can be uniquely represented by a single vector which is orthogonal to the hyperplane; we will call this the coefficient vector. Since features that are orthogonal (or close to orthogonal) to the hyperplane are most relevant to classification, we can interpret the entries of the coefficient vector as a metric of feature importance, where large positive entries indicate that a feature contributes greatly to a positive classification \cite{Guyon}.
 
 In TF-IDF vectors, each dimension (i.e. feature) corresponds to a single word's occurrence in that noteset. Therefore, that feature's corresponding coefficient measures the predictiveness of that word's presence to a diagnosis of neonatal jaundice. We plot these most-relevant terms in Fig.~\ref{rel}.
-We see that the most relevant features include terms such as "bili", an abbreviation for bilirubin (the chemical which causes jaundice) and "phototherapy", the standard treatment for patients with jaundice. Based on a manual inspection of the top features, it seems that the SVM is learning to classify notesets based on words that are relevant to neonatal jaundice. 
+We see that the most relevant features include terms such as "bili", an abbreviation for bilirubin (the chemical which causes jaundice), and "phototherapy", the standard treatment for patients with jaundice. Based on a manual inspection of the top features, it seems that SVM is learning to classify notesets based on words that are relevant to neonatal jaundice. 
 \section{Conclusion}
-FINISH
+We have shown that both bagged decision trees and boosted decision trees are able to outperform SVM at the task of automatically detecting a neonatal jaundice diagnosis from clinical notes and reports, and these ensemble methods approach human-level accuracy. The ability of these models to achieve high performance based entirely on free text data implies that the clinical notes contain sufficient information to carry out the task of assigning ICD codes. As more labeled clinical text becomes available, training highly accurate automatic coding models will become feasible for a wider set of ICD codes. 
 
 \begin{thebibliography}{00}
 \bibitem{Banerjee} Banerjee, I., Madhavan, S., Goldman, R. E., Rubin, D. L. (2017). Intelligent Word Embeddings of Free-Text Radiology Reports. AMIA Annual Symposium.
