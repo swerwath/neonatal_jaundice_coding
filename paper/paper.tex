@@ -31,33 +31,33 @@ This study explores the creation of a machine learning model to automatically id
 \subsection{Medical Coding}\label{AA}
 In the course of normal clinical operations, healthcare providers are often required to \textit{code} patient records. The process of coding involves taking all data associated with a single patient case and abstracting out a set of standardized alphanumeric codes where each unique code is associated with a unique diagnosis or medical procedure. These codes are used for a variety of applications, including medical billing, as labels in statistical analysis of medical datasets, as features in clinical decision making, and as tags in information retrieval systems. 
 
-While many coding schemes exists, the most widely used is the International Classification of Diseases, 9\textsuperscript{th} Revision (ICD-9) [SLEE]. Each ICD-9 codes consists of 3 to 5 alphanumeric characters which represents either a diagnosis or a procedure.
+While many coding schemes exists, the most widely used is the International Classification of Diseases, 9\textsuperscript{th} Revision (ICD-9) \cite{Slee}. Each ICD-9 codes consists of 3 to 5 alphanumeric characters which represents either a diagnosis or a procedure.
 
-In actual clinical practice, coding is performed manually by professional medical coders. This process is both time-intensive and error-prone due to the fact that patient health records contain a large amount of data in free-text narrative format which is difficult to interpret quickly for both humans and computers [TANGE]. 
+In actual clinical practice, coding is performed manually by professional medical coders. This process is both time-intensive and error-prone due to the fact that patient health records contain a large amount of data in free-text narrative format which is difficult to interpret quickly for both humans and computers \cite{Tange}\cite{OMalley}. 
 
-A system for automatic coding would have the potential to substantially decrease the number of man-hours required to process clinical cases, but building such a system requires the ability to extract important information from free-text reports. To this end, the application of natural language processing (NLP) and machine learning (ML) techniques to clinical texts show much promise [MEYSTRE].
+A system for automatic coding would have the potential to substantially decrease the number of man-hours required to process clinical cases, but building such a system requires the ability to extract important information from free-text reports. To this end, the application of natural language processing (NLP) and machine learning (ML) techniques to clinical texts show much promise \cite{Meystre}.
 
 \subsection{Neonatal Jaundice}\label{AA}
-Neonatal jaundice, also called neonatal hyperbilirubinemia, is a yellow discoloration of the skin due to elevated bilirubin in a neonate's (infant's) blood. Transient neonatal jaundice is somewhat common in infants and usually carries little risk. However, untreated jaundice can put premature or otherwise ill infants at great risk of developing permanent neurological impairments [LANTZY]. Additionally, it has been shown that the diagnosis of neonatal jaundice is a risk factor for both mortality and rehospitalization [ESCOBAR]. 
+Neonatal jaundice, also called neonatal hyperbilirubinemia, is a yellow discoloration of the skin due to elevated bilirubin in a neonate's (infant's) blood. Transient neonatal jaundice is somewhat common in infants and usually carries little risk. However, untreated jaundice can put premature or otherwise ill infants at great risk of developing permanent neurological impairments \cite{Lantzy}. Additionally, it has been shown that the diagnosis of neonatal jaundice is a risk factor for both mortality and rehospitalization \cite{Escobar}. 
 
 Both the risk factors associated with and the relative prevalence of neonatal jaundice make it an excellent subject for study using machine learning techniques; the risk factors provide the motivation, while the prevalence provide a wealth of data to be analyzed.
 
 \section{Related Work}
-The past few years have seen a meteoric rise in the application of natural language processing (NLP) in the medical field [WOLNIEWICZ]. The cost of analyzing medical documents, both monetary and time, has motivated efforts to automate many manual tasks in the analysis and processing of medical texts.
+The past few years have seen a meteoric rise in the application of natural language processing (NLP) in the medical field \cite{Wolniewicz}. The cost of analyzing medical documents, both monetary and time, has motivated efforts to automate many manual tasks in the analysis and processing of medical texts.
 
-Given both the importance and time-intensive nature of medical coding, many scientists have started developing techniques for automated coding. [MEYSTRE]. For most of these attempts, the task was domain-specific (i.e. attempting to predict a single ICD code or a small set of related codes) and utilized a relatively small dataset. 
+Given both the importance and time-intensive nature of medical coding, many scientists have started developing techniques for automated coding \cite{Meystre}. For most of these attempts, the task was domain-specific (i.e. attempting to predict a single ICD code or a small set of related codes) and utilized a relatively small dataset. 
 
-At least one attempt has been made to use deep learning (namely character-level recurrent neural networks) to build more general coding models, but with limited success [SHI]. The main limitation with this method is that deep learning models require a large amount of data to train [CHEN], but even a large clinical dataset may only contain a few examples of case files with any given ICD code. Additionally, since the ICD-9 standard contains over 14,000 different codes. Treating coding as a simple multi-class classification problem with 14,000 different classes is infeasible.
+At least one attempt has been made to use deep learning (namely character-level recurrent neural networks) to build more general coding models, but with limited success \cite{Shi}. The main limitation with this method is that deep learning models require a large amount of data to train \cite{Chen}, but even a large clinical dataset may only contain a few examples of case files with any given ICD code. Additionally, since the ICD-9 standard contains over 14,000 different codes. Treating coding as a simple multi-class classification problem with 14,000 different classes is infeasible.
 
-More successful automated coding models have utilized non-deep machine learning techniques such as support vector machines (SVMs) [VAPNIK] and focus on training a model to detect the presence of a single ICD code or class of related codes. Some of these methods also leverage structured data stored in health records in addition to free-text narratives [FERRAO].
+More successful automated coding models have utilized non-deep machine learning techniques such as support vector machines (SVMs) \cite{Cortes} and focus on training a model to detect the presence of a single ICD code or class of related codes. Some of these methods also leverage structured data stored in health records in addition to free-text narratives \cite{Ferrao}.
 
-At least one previous attempt has been made to build an automatic coding model for neonatal jaundice using an SVM on the text of clinical notes [MARAFINO]. Our research improves on this model by introducing a number of preprocessing stages. We also explore and compare alternative classification techniques and analyze their efficacy.
+At least one previous attempt has been made to build an automatic coding model for neonatal jaundice using an SVM on the text of clinical notes \cite{Marafino}. Our research improves on this model by introducing a number of preprocessing stages. We also explore and compare alternative classification techniques and analyze their efficacy.
 
 No matter the exact method for extracting medical codes from free-text, two common NLP challenges must be solved. First, one must represent free-text in an appropriate feature space (usually as a vector). Second, one must train a model to accurately classify patient records based on the selected features. 
 
 \section{Methodology}
 \subsection{Dataset and Data Extraction}\label{AA}
-The Medical Information Mart for Intensive Care III (MIMIC-III) dataset contains complete anonymized records from over 53,000 ICU stays [JOHNSON]. These records were gathered from hospital records from the Beth Israel Deaconess Medical Center in Boston, Massachusetts between 2001 and 2012. Of these records, 7870 correspond to neonates admitted between 2001 and 2008. 
+The Medical Information Mart for Intensive Care III (MIMIC-III) dataset contains complete anonymized records from over 53,000 ICU stays \cite{Johnson}. These records were gathered from hospital records from the Beth Israel Deaconess Medical Center in Boston, Massachusetts between 2001 and 2012. Of these records, 7870 correspond to neonates admitted between 2001 and 2008. 
 
 Each hospital stay in the MIMIC-III dataset is assigned a unique HADM\_ID identifier which can be used to cross-reference associated data back their associated hospitalization.
 
@@ -85,13 +85,13 @@ In total, 7092 hospitalizations were of neonates. Of these, 2868 stays were asso
 
 For each relevant hospitalization, we concatenated all ICU notes, including nursing notes, radiology reports, physician progress notes, and discharge summaries into a single string of text called a \textit{noteset}. This string served as the raw data to be preprocessed and then classified. 
 \subsection{Data Preprocessing}\label{AA}
-Preprocessing of raw text is an extremely important element of any NLP model, especially in the task of classification [HADDI]. In fact, the preprocessing of raw text is a form of manual feature selection, in which we are able to choose what parts of the document are to be given to the classifier [FATIH].
+Preprocessing of raw text is an extremely important element of any NLP model, especially in the task of classification \cite{Haddi}. In fact, the preprocessing of raw text is a form of manual feature selection, in which we are able to choose what parts of the document are to be given to the classifier \cite{Fatih}.
 
 The first stage of our preprocessing algorithm is \textit{cleaning}, in which punctuation and other extraneous characters are stripped from the raw text. In addition to punctuation, numbers are also removed from the noteset. While numbers are often left in classifiers for medical texts, later cross-validation indicated that they were low-information for this particular task. Finally, we also remove anonymization indicators from the text of the doument. The indicators are special flags left to indicate that confidential patient data had been redacted from the noteset at that point in the text, and generally contained information that was irrelevant for classification such as dates, names, and phone numbers.
 
-After the noteset is cleaned, it is \textit{tokenized}, or split into a stream of individual words. The next series of preprocessing steps act on individual words or multiword phrases, and they work to reduce the \textit{vocabulary}, or number of unique words, of our dataset. Vocabulary reduction often results in improved classification performance [MADSEN] because the model does not have to learn to classify low-information words or learn that synonymous words or phrases should be classified similarly. Depending on your representation of documents as vectors (e.g. one-hot encodings), vocabulary reduction corresponds directly to a dimensionality reduction of samples.
+After the noteset is cleaned, it is \textit{tokenized}, or split into a stream of individual words. The next series of preprocessing steps act on individual words or multiword phrases, and they work to reduce the \textit{vocabulary}, or number of unique words, of our dataset. Vocabulary reduction often results in improved classification performance \cite{Madsen} because the model does not have to learn to classify low-information words or learn that synonymous words or phrases should be classified similarly. Depending on your representation of documents as vectors (e.g. one-hot encodings), vocabulary reduction corresponds directly to a dimensionality reduction of samples.
 
-The first stage of vocabulary reduction is \textit{semantic mapping}, i.e. the replacement of synonymous words or phrases with a standard token [BANERJEE]. This allows the model to learn only one representation of the underlying concept rather than having to learn many. For this, we use a list of 727 common medical words and phrases [TAMANG] and use regular expressions to find and replace each of them in the notesets. Examples of such replacements can be found in Table~\ref{reptab}.
+The first stage of vocabulary reduction is \textit{semantic mapping}, i.e. the replacement of synonymous words or phrases with a standard token \cite{Banerjee}. This allows the model to learn only one representation of the underlying concept rather than having to learn many. For this, we use a list of 727 common medical words and phrases \cite{Tamang} and use regular expressions to find and replace each of them in the notesets. Examples of such replacements can be found in Table~\ref{reptab}.
 \begin{table}[htbp]
 \caption{Example Replacements During Preprocessing}
 \begin{center}
@@ -111,11 +111,11 @@ The first stage of vocabulary reduction is \textit{semantic mapping}, i.e. the r
 \end{center}
 \end{table}
 
-After semantic mapping, we apply \textit{stemming}, which is the process of reducing words to their root morpheme (see Table~\ref{reptab}). For this task, we use the Snowball stemming algorithm [PORTER]. Since different morphological variations of the same word (e.g. "neonatal" and "neonate") likely have similar meanings, stemming allows the model to learn  a single classification for all morphological forms for a word.
+After semantic mapping, we apply \textit{stemming}, which is the process of reducing words to their root morpheme (see Table~\ref{reptab}). For this task, we use the Snowball stemming algorithm \cite{Porter}. Since different morphological variations of the same word (e.g. "neonatal" and "neonate") likely have similar meanings, stemming allows the model to learn  a single classification for all morphological forms for a word.
 
-Next, \textit{stop words} were removed from the notesets. Stop words are common words such as "the" and "it" which convey no real semantic information. The removal of stop words from raw text has been shown to improve the performance of classification models due to their being low-information and useless for most classification tasks [SILVA]. 
+Next, \textit{stop words} were removed from the notesets. Stop words are common words such as "the" and "it" which convey no real semantic information. The removal of stop words from raw text has been shown to improve the performance of classification models due to their being low-information and useless for most classification tasks \cite{Silva}. 
 
-Finally, collocations, or common multiword phrases, are detected and replaced with a single token. In order to automatically detect collocations in our corpus, we calculate the \textit{normalized pointwise mutual information} (NPMI) of every pair of words in the corpus [BOUMA]. The NPMI is given by \eqref{pmi}, where $x$ and $y$ are indicators for a two given words appearing in text, $p(x,y)$ is the probability of the two words appearing next to each other, and all probabilities are measured empirically from our corpus.
+Finally, collocations, or common multiword phrases, are detected and replaced with a single token. In order to automatically detect collocations in our corpus, we calculate the \textit{normalized pointwise mutual information} (NPMI) of every pair of words in the corpus \cite{Bouma}. The NPMI is given by \eqref{pmi}, where $x$ and $y$ are indicators for a two given words appearing in text, $p(x,y)$ is the probability of the two words appearing next to each other, and all probabilities are measured empirically from our corpus.
 \begin{equation}
 i_n(x,y) = \frac{-1}{\ln p(x,y)}\ln \frac{p(x,y)}{p(x)p(y)}\label{pmi}
 \end{equation}
@@ -138,17 +138,20 @@ tfidf(t, d) = \frac{|t' \in d : t' = t|}{|d|} idf(t)\label{tfidf}
 This value is called the \textit{term frequency-inverse document frequency} (TF-IDF), and a vector of these values is called a TF-IDF vector.
 
 \subsection{Baseline SVM Models}\label{AA}
-Reference [MARAFINO] demonstrates the use of a support vector machine (SVM) to perform automatic coding for neonatal jaundice. This study used a grid search to determine that a linear kernel with penalty hyperparameter of $C = 100$. This model was reimplemented, and our own grid search over relevant hyperparmeters with 10-fold cross-validation found those same settings to be optimal. This SVM model was used as a baseline to compare with the performance of new ensemble learning methods. 
+Reference \cite{MARAFINO} demonstrates the use of a support vector machine (SVM) to perform automatic coding for neonatal jaundice. This study used a grid search to determine that a linear kernel with penalty hyperparameter of $C = 100$. This model was reimplemented, and our own grid search over relevant hyperparmeters with 10-fold cross-validation found those same settings to be optimal. This SVM model was used as a baseline to compare with the performance of new ensemble learning methods. 
 \subsection{Ensemble Methods}\label{AA}
-\textit{Ensemble learning} refers to the practice of training and using multiple machine learning models and combining their outputs into a final output via a "voting" system. Ensemble methods often provide better results than using a single model because they can reduce variance. When a set of models are trained with random samples of a dataset or on a random subset of features, we are essentially sampling from the space of possible classifiers. By taking many samples and averaging their results, we reduce our reliance on the particularities of any one classifier and therefore reduce variance [DIETTERICH].
+\textit{Ensemble learning} refers to the practice of training and using multiple machine learning models and combining their outputs into a final output via a "voting" system. Ensemble methods often provide better results than using a single model because they can reduce variance. When a set of models are trained with random samples of a dataset or on a random subset of features, we are essentially sampling from the space of possible classifiers. By taking many samples and averaging their results, we reduce our reliance on the particularities of any one classifier and therefore reduce variance \cite{Dietterich}.
 
-We used the sklearn package [PEDREGOSA] to implement two ensembled classifiers: AdaBoost with decision trees [ZHU] and bagged decision trees [BREIMAN]. 
+We used the sklearn package \cite{Pedregosa} to implement two ensembled classifiers: AdaBoost with decision trees \cite{Zhu} and bagged decision trees \cite{Breiman}. 
 
-AdaBoost 
-\subsection{Evaluation}\label{AA}
+The base estimator of both our ensemble methods are \textit{decision trees}. A decision tree uses a tree-like model, where each node represents a decision based on the value of a single feature, and each subsequent branch represents a path chosen based on that decision. Trees are constructed such that each decision boundary maximally decreases the Gini Impurity of the two sets of samples which would fall on either side of the boundary. Put another way, each decision node of the trees attempts to best separate the training data based on the value of a single feature. For our implementation of decision trees, the depth of the tree is allowed to grow indefinitely until all leaves contain pure subsets of the training set. 
+
+Decision trees tend to suffer from problems such as instability and overfitting \cite{Gareth}. One technique to counter such problems is \textit{bagging}, in which $n$ different decision trees (in our case, $n = 10$ was found to be optimal) are trained on different samples of the training data. To classify a new sample, each of the $n$ trees performs classification, and then a vote is taken to determine the final label.
+
+\textit{AdaBoost} is another ensemble method which attempts to improve on the performance of a single base classifier. Rather than sampling uniformly from the training set to train each classifier, each decision tree is trained on the same training set, but with each training point has different weights for each classifier. The values of the weights for classifier $k$ are determined by how poorly the first $k-1$ classifiers predict the point, so that greater weight is given to misclassified points. To classify a new sample, each individual trees performs classification, and then a weighted vote is taken to determine the final label. Using cross-validation, we found that using 40 boosted decision trees worked best for our problem.
 
 \section{Results}
-The performance of the baseline classifier from [MARAFINO], our implementation of SVM, and the two ensembled classifiers are summarized in Table~\ref{restab}
+The performance of the baseline classifier from \cite{Marafino}, our implementation of SVM, and the two ensemble classifiers are summarized in Table~\ref{restab}.
 \begin{table}[htbp]
 \caption{Performance of Various Classifiers}
 \begin{center}
@@ -156,87 +159,92 @@ The performance of the baseline classifier from [MARAFINO], our implementation o
 \textbf{Classifier}&\textbf{Accuracy}&\textbf{Precision}&\textbf{Recall}&\textbf{F\textsubscript{1} Score} \\
 \hline
 \textbf{SVM (Marafino et al.)} & 0.898 & 0.908 & 0.853 & 0.884 \\
-\textbf{SVM (reimplemented)} & 0.857 & 0.872 & 0.888 & 0.880 \\
-\textbf{AdaBoost Trees} & \textbf{0.907} & \textbf{0.923} & 0.846 & 0.883 \\
-\textbf{Bagged Trees} & 0.902 & 0.897 & \textbf{0.941} & \textbf{0.919} \\
-
+\textbf{SVM (reimplemented)} & 0.865 & 0.835 & 0.839 & 0.837 \\
+\textbf{AdaBoost Trees} & 0.907 & \textbf{0.923} & 0.846 & 0.883 \\
+\textbf{Bagged Trees} & \textbf{0.909} & 0.904 & \textbf{0.876} & \textbf{0.890} \\
 \end{tabular}
 \label{restab}
 \end{center}
 \end{table}
-\section{Discussion}
-\section{Conclusion}
+The F\textsubscript{1} score refers to the harmonic average of precision and recall, given in \eqref{f1}.
+\begin{equation}
+F_1 = \frac{2}{precision^{-1} + recall^{-1}}\label{f1}
+\end{equation}
 
-\subsection{Figures and Tables}
-\paragraph{Positioning Figures and Tables} Place figures and tables at the top and 
-bottom of columns. Avoid placing them in the middle of columns. Large 
-figures and tables may span across both columns. Figure captions should be 
-below the figures; table heads should appear above the tables. Insert 
-figures and tables after they are cited in the text. Use the abbreviation 
-``Fig.~\ref{fig}'', even at the beginning of a sentence.
+We see that our reimplementation of the SVM in \cite{MARAFINO} did not perform as well as the original, though this is likely due to differences in the dataset. Both of our ensemble methods outperform the two SVM implementations in at least one of the performance metrics. 
 
-\begin{table}[htbp]
-\caption{Table Type Styles}
-\begin{center}
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{Table}&\multicolumn{3}{|c|}{\textbf{Table Column Head}} \\
-\cline{2-4} 
-\textbf{Head} & \textbf{\textit{Table column subhead}}& \textbf{\textit{Subhead}}& \textbf{\textit{Subhead}} \\
-\hline
-copy& More table copy$^{\mathrm{a}}$& &  \\
-\hline
-\multicolumn{4}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
-\end{tabular}
-\label{tab2}
-\end{center}
-\end{table}
-
+We see the receiver operating characteristics (ROC) of the ensembled methods in Fig.~\ref{roc}. We see that the SVM baseline performance lies under the the ROC curves of both ensemble methods, implying that the ensemble methods are able to outperform the SVM. 
 \begin{figure}[htbp]
-\centerline{\includegraphics[scale=0.5]{fig1}}
-\caption{Example of a figure caption.}
-\label{fig}
+\centerline{\includegraphics[scale=0.6]{roc}}
+\caption{ROC curves of ensemble methods compared to SVM baseline}
+\label{roc}
 \end{figure}
 
-Figure Labels: Use 8 point Times New Roman for Figure labels. Use words 
-rather than symbols or abbreviations when writing Figure axis labels to 
-avoid confusing the reader. As an example, write the quantity 
-``Magnetization'', or ``Magnetization, M'', not just ``M''. If including 
-units in the label, present them within parentheses. Do not label axes only 
-with units. In the example, write ``Magnetization (A/m)'' or ``Magnetization 
-\{A[m(1)]\}'', not just ``A/m''. Do not label axes with a ratio of 
-quantities and units. For example, write ``Temperature (K)'', not 
-``Temperature/K''.
+Finally, an AdaBoost classifier was trained on only discharge summaries, rather than entire notesets. The accuracy of the classifier decreased from 0.91 to 0.86, implying that non-discharge notes contained information relevant to the classification.
+\section{Discussion}
+\subsection{Performance of Ensemble Methods}
+Both the AdaBoost and bagged trees classifiers outperformed the baseline SVM. While we were unable to find statistics on the accuracy of human medical coders in coding for neonatal jaundice, the average accuracy of humans in coding for a large variety of diagnoses seems to range roughly from 0.90 to 0.95 \cite{OMalley}. Therefore, it is possible that our models are approaching human-level performance at the task of coding for neonatal jaundice.
 
-\section*{References}
+When training ensemble methods, one important hyperparameter is the number of estimators to train. Fig.~\ref{num} shows the performance of AdaBoost as a function of the number of boosted decision tree estimators.
+\begin{figure}[htbp]
+\centerline{\includegraphics[scale=0.6]{num_boosted}}
+\caption{The effect of adding more classifiers on AdaBoost accuracy. Overfitting occurs when more than 40 classifiers are used.}
+\label{num}
+\end{figure}
+We see that adding more than 40 classifiers increases training accuracy while having no effect on testing accuracy, demonstrating that overfitting is occurring. Fig.~\ref{bag} shows a similar relationship for the bagged trees classifier.
+\begin{figure}[htbp]
+\centerline{\includegraphics[scale=0.6]{num_bagged}}
+\caption{The effect of adding more classifiers on AdaBoost accuracy. Overfitting occurs when more than 13 classifiers are used.}
+\label{bag}
+\end{figure}
 
-Please number citations consecutively within brackets \cite{b1}. The 
-sentence punctuation follows the bracket \cite{b2}. Refer simply to the reference 
-number, as in \cite{b3}---do not use ``Ref. \cite{b3}'' or ``reference \cite{b3}'' except at 
-the beginning of a sentence: ``Reference \cite{b3} was the first $\ldots$''
+In the task of medical detection, recall is often considered a more important metric than precision, since false positives can be manually checked and corrected by a human while false negatives may go unnoticed. As such, the bagged trees model may be favored for actual use in a clinical setting.
+\subsection{Feature Importance}
+\begin{figure*}[htbp]
+\centerline{\includegraphics[scale=0.5]{predictiveness}}
+\caption{Relevance of words in determining a positive SVM classification}
+\label{rel}
+\end{figure*}
+While the SVM was outperformed by ensemble methods, it can nonetheless provide interesting insight into what words are most likely to indicate neonatal jaundice.
 
-Number footnotes separately in superscripts. Place the actual footnote at 
-the bottom of the column in which it was cited. Do not put footnotes in the 
-abstract or reference list. Use letters for table footnotes.
+Recall that, in SVM with a linear kernel, the learned classifier is the ideal separating hyperplane. This hyperplane, like all hyperplanes, can be uniquely represented by a single vector which is orthogonal to the hyperplane; we will call this the coefficient vector. Since features that are orthogonal (or close to orthogonal) to the hyperplane are most relevant to classification, we can interpret the entries of the coefficient vector as a metric of feature importance, where large positive entries indicate that a feature contributes greatly to a positive classification \cite{Guyon}.
 
-Unless there are six authors or more give all authors' names; do not use 
-``et al.''. Papers that have not been published, even if they have been 
-submitted for publication, should be cited as ``unpublished'' \cite{b4}. Papers 
-that have been accepted for publication should be cited as ``in press'' \cite{b5}. 
-Capitalize only the first word in a paper title, except for proper nouns and 
-element symbols.
-
-For papers published in translation journals, please give the English 
-citation first, followed by the original foreign-language citation \cite{b6}.
+In TF-IDF vectors, each dimension (i.e. feature) corresponds to a single word's occurrence in that noteset. Therefore, that feature's corresponding coefficient measures the predictiveness of that word's presence to a diagnosis of neonatal jaundice. We plot these most-relevant terms in Fig.~\ref{rel}.
+We see that the most relevant features include terms such as "bili", an abbreviation for bilirubin (the chemical which causes jaundice) and "phototherapy", the standard treatment for patients with jaundice. Based on a manual inspection of the top features, it seems that the SVM is learning to classify notesets based on words that are relevant to neonatal jaundice. 
+\section{Conclusion}
+FINISH
 
 \begin{thebibliography}{00}
-\bibitem{b1} G. Eason, B. Noble, and I. N. Sneddon, ``On certain integrals of Lipschitz-Hankel type involving products of Bessel functions,'' Phil. Trans. Roy. Soc. London, vol. A247, pp. 529--551, April 1955.
-\bibitem{b2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp.68--73.
-\bibitem{b3} I. S. Jacobs and C. P. Bean, ``Fine particles, thin films and exchange anisotropy,'' in Magnetism, vol. III, G. T. Rado and H. Suhl, Eds. New York: Academic, 1963, pp. 271--350.
-\bibitem{b4} K. Elissa, ``Title of paper if known,'' unpublished.
-\bibitem{b5} R. Nicole, ``Title of paper with only first word capitalized,'' J. Name Stand. Abbrev., in press.
-\bibitem{b6} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ``Electron spectroscopy studies on magneto-optical media and plastic substrate interface,'' IEEE Transl. J. Magn. Japan, vol. 2, pp. 740--741, August 1987 [Digests 9th Annual Conf. Magnetics Japan, p. 301, 1982].
-\bibitem{b7} R. Wolniewicz (2015). "Computer-assisted coding and natural language processing."
+\bibitem{Banerjee} Banerjee, I., Madhavan, S., Goldman, R. E., Rubin, D. L. (2017). Intelligent Word Embeddings of Free-Text Radiology Reports. AMIA Annual Symposium.
+\bibitem{Bouma} Bouma, G. (2009). Normalized (Pointwise) Mutual Information in Collocation Extraction. Proceedings of German Society for Computational Linguistics (GSCL 2009), 31–40.
+\bibitem{Breiman} Breiman, L. (1996). Bagging predictors. Machine Learning, 24(2), 123–140.
+Centers for Medicare and Medicaid Services. (2016). ICD-10-CM/PCS The Next Generation of Coding.
+\bibitem{Chapman} Chapman, B. E., Lee, S., Kang, H. P., Chapman, W. W. (2011). Document-level classification of CT pulmonary angiography reports based on an extension of the ConText algorithm. Journal of Biomedical Informatics, 44(5), 728-737.
+\bibitem{Chen} Chen, X.-W., Lin, X. (2014). Big Data Deep Learning: Challenges and Perspectives. IEEE Access, 2, 514-525.
+\bibitem{Conneau} Conneau, A. (2016). Very Deep Convolutional Networks for Text Classification. Neurocomputing, 3(1), 130-142.
+\bibitem{Cortes} Cortes, C., Vapnik, V. (1995). Support Vector Networks. Machine Learning, 20(3), 273-297.
+\bibitem{Dietterich} Dietterich, T. G. (2000). Ensemble Methods in Machine Learning. Multiple Classifier Systems, 1857, 1-15.
+\bibitem{Escobar} Escobar, G. J., Joffe, S., Gardner, M. N., Armstrong, M. A., Folck, B. F., Carpenter, D. M. (1999). Rehospitalization in the First Two Weeks After Discharge From the Neonatal Intensive Care Unit. Pediatrics, 104.
+\bibitem{Fatih} Fatih, M., Bayir, S. (2017). Examining the Impact of Feature Selection Methods on Text Classification. IJACSA) International Journal of Advanced Computer Science and Applications, 8(12).
+\bibitem{Ferrao} Ferrao, J. C., Janela, F., Ferrao, J. C., Martins, H. M. G. (2013). Using structured EHR data and SVM to support ICD-9-CM coding. Proceedings - 2013 IEEE International Conference on Healthcare Informatics, ICHI 2013, 511-516.
+\bibitem{Gareth} Gareth, J., Witten, D., Hastie, T., Tibshirani, R. (2015). An Introduction to Statistical Learning. New York: Springer.
+\bibitem{Guyon} Guyon, I., Weston, J., Barnhill, S., Vapnik, V. (2002). Gene Selection for Cancer Classification using Support Vector Machines, Machine Learning. Machine Learning, 46(1-3), 389-422.
+\bibitem{Haddi} Haddi, E., Liu, X., Shi, Y. (2013). The role of text pre-processing in sentiment analysis. In Procedia Computer Science (Vol. 17, pp. 26-32).
+\bibitem{Johnson} Johnson, A. E., Pollard, T. J., Shen, L., Lehman, L. W. H., Feng, M., Ghassemi, M., … Mark, R. G. (2016). MIMIC-III, a freely accessible critical care database. Scientific Data, 3.
+\bibitem{Lantzy} Lantzy, A. (2015). Neonatal Hyperbilirubinemia. In Merck Manual.
+\bibitem{Madsen} Madsen, R. E., Sigurdsson, S., Hansen, L. K., Larsen, J. (2004). Pruning The Vocabulary For Better Context Recognition. Pattern Recognition.
+\bibitem{Marafino} Marafino, B. J., Davies, J. M., Bardach, N. S., Dean, M. L., Dudley, R. A. (2014). N-gram support vector machines for scalable procedure and diagnosis classification, with applications to clinical free text data from the intensive care unit. Journal of the American Medical Informatics Association : JAMIA, 1-6.
+\bibitem{Meystre} Meystre, S. M., Savova, G. K., Kipper-Schuler, K. C., Hurdle, J. F. (2008). Extracting information from textual documents in the electronic health record: a review of recent research. Yearbook of Medical Informatics, (November 2007), 128-44.
+\bibitem{OMalley} O’Malley, K. J., Cook, K. F., Price, M. D., Wildes, K. R., Hurdle, J. F., Ashton, C. M. (2005). Measuring diagnoses: ICD code accuracy. Health Services Research.
+\bibitem{Pedregosa} Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., Duchesnay, É. (2012). Scikit-learn: Machine Learning in Python. Journal of Machine Learning Research, 12, 2825-2830.
+\bibitem{Porter} Porter, M. (1980). An Algorithm for Suffix Stripping. Program, 14(3), 130-137.
+\bibitem{Shi} Shi, H., Xie, P., Hu, Z., Zhang, M., Xing, E. P. (2017). Towards Automated ICD Coding Using Deep Learning.
+\bibitem{Silva} Silva, C., Ribeiro, B. (2003). The importance of stop word removal on recall values in text categorization. Proceedings of the International Joint Conference on Neural Networks, 3, 1661-1666.
+\bibitem{Slee} Slee, V. (1978). The International Classification of Diseases: Ninth Revision (ICD-9). Ann Intern Med., 424-426.
+\bibitem{Tange} Tange, H. J., Schouten, H. C., Kester, A. D. M., Hasman, A. (1998). The granularity of medical narratives and its effect on the speed and completeness of information retrieval. Journal of the American Medical Informatics Association, 5(6), 571-582.
+\bibitem{Wolniewicz} Wolniewicz, R. (2015). Computer-assisted coding and natural language processing Executive summary.
+\bibitem{Zhu} Zhu, J., Arbor, A., Hastie, T. (2006). Multi-class AdaBoost, 0-20.
+
 \end{thebibliography}
 
 \end{document}
